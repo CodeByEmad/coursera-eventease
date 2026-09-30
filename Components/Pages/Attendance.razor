@@ -1,0 +1,69 @@
+@page "/attendance"
+@inject EventService EventService
+@inject SessionService SessionService
+
+<PageTitle>Attendance | EventEase</PageTitle>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+        <div>
+            <h1>Attendance Tracker</h1>
+            <p class="text-muted mb-0">Track registered attendees and mark attendance.</p>
+        </div>
+        @if (SessionService.IsLoggedIn)
+        {
+            <div class="small text-muted">Signed in as <strong>@SessionService.UserName</strong></div>
+        }
+    </div>
+
+    @foreach (var item in EventService.GetEvents())
+    {
+        var attendee = GetAttendee(item.Id);
+        <div class="card shadow-sm mb-3">
+            <div class="card-body d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                <div>
+                    <h2 class="h5 mb-1">@item.Name</h2>
+                    <div class="text-muted">@item.RegisteredCount registered • @item.AvailableSeats seats remaining</div>
+                    @if (attendee is not null)
+                    {
+                        <div class="mt-2">Attendee: <strong>@attendee.AttendeeName</strong></div>
+                    }
+                </div>
+                @if (attendee is not null)
+                {
+                    <button class="btn @(attendee.Attended ? "btn-success" : "btn-outline-success")" @onclick="() => ToggleAttendance(attendee)">
+                        @(attendee.Attended ? "Attended ✓" : "Mark attended")
+                    </button>
+                }
+                else
+                {
+                    <span class="badge text-bg-secondary">No current session attendee</span>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private readonly List<AttendanceRecord> records = new();
+
+    protected override void OnInitialized()
+    {
+        if (SessionService.IsLoggedIn)
+        {
+            var firstEvent = EventService.GetEvents().FirstOrDefault();
+            if (firstEvent is not null)
+            {
+                records.Add(new AttendanceRecord
+                {
+                    EventId = firstEvent.Id,
+                    AttendeeName = SessionService.UserName!
+                });
+            }
+        }
+    }
+
+    private AttendanceRecord? GetAttendee(int eventId) => records.FirstOrDefault(r => r.EventId == eventId);
+
+    private void ToggleAttendance(AttendanceRecord record) => record.Attended = !record.Attended;
+}

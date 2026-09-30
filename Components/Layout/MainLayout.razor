@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+
+<div class="page-shell">
+    <header class="topbar">
+        <div class="container d-flex align-items-center justify-content-between py-3">
+            <a class="brand" href="/">EventEase</a>
+            <nav class="nav-links">
+                <a href="/events">Events</a>
+                <a href="/attendance">Attendance</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        @Body
+    </main>
+
+    <footer class="border-top py-4 mt-5">
+        <div class="container text-muted small">EventEase • Blazor event management demo</div>
+    </footer>
+</div>

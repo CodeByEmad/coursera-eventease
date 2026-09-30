@@ -1,0 +1,18 @@
+@using EventEase.Components.Layout
+@using Microsoft.AspNetCore.Components.Routing
+
+<Router AppAssembly="typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="typeof(MainLayout)">
+            <div class="container py-5">
+                <h1>Page not found</h1>
+                <p>The page you requested does not exist.</p>
+                <a href="/events" class="btn btn-primary">Browse events</a>
+            </div>
+        </LayoutView>
+    </NotFound>
+</Router>

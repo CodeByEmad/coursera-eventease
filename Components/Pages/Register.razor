@@ -1,0 +1,84 @@
+@page "/register"
+@page "/register/{EventId:int}"
+@inject EventService EventService
+@inject SessionService SessionService
+@inject NavigationManager Navigation
+
+<PageTitle>Register | EventEase</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <h1>Event Registration</h1>
+            <p class="text-muted">Enter your details to reserve a place.</p>
+
+            @if (submitted)
+            {
+                <div class="alert alert-success">
+                    <strong>Registration complete.</strong> You are registered for <strong>@selectedEvent?.Name</strong>.
+                </div>
+                <a href="/attendance" class="btn btn-primary">View attendance tracker</a>
+            }
+            else
+            {
+                <EditForm Model="registration" OnValidSubmit="SubmitRegistration" class="card shadow-sm p-4">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="name">Full name</label>
+                        <InputText id="name" class="form-control" @bind-Value="registration.FullName" />
+                        <ValidationMessage For="@(() => registration.FullName)" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <InputText id="email" type="email" class="form-control" @bind-Value="registration.Email" />
+                        <ValidationMessage For="@(() => registration.Email)" />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label" for="event">Event</label>
+                        <InputSelect id="event" class="form-select" @bind-Value="registration.EventId">
+                            <option value="0">Select an event</option>
+                            @foreach (var item in AvailableEvents)
+                            {
+                                <option value="@item.Id">@item.Name — @item.Date.ToString("dd MMM")</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => registration.EventId)" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" disabled="@(registration.EventId == 0)">Register</button>
+                </EditForm>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int? EventId { get; set; }
+
+    private Registration registration = new();
+    private Event? selectedEvent;
+    private bool submitted;
+
+    private IEnumerable<Event> AvailableEvents => EventService.GetEvents().Where(e => !e.IsFull);
+
+    protected override void OnParametersSet()
+    {
+        if (EventId.HasValue)
+            registration.EventId = EventId.Value;
+    }
+
+    private void SubmitRegistration()
+    {
+        selectedEvent = EventService.GetEvent(registration.EventId);
+        if (selectedEvent is null || selectedEvent.IsFull)
+            return;
+
+        EventService.Register(registration.EventId);
+        SessionService.SignIn(registration.FullName, registration.Email);
+        submitted = true;
+    }
+}

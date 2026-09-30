@@ -1,0 +1,22 @@
+:root {
+    --ee-primary: #2563eb;
+    --ee-dark: #0f172a;
+    --ee-muted: #64748b;
+    --ee-bg: #f8fafc;
+}
+
+html, body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--ee-bg); color: var(--ee-dark); }
+a { color: inherit; }
+.topbar { background: white; border-bottom: 1px solid #e2e8f0; }
+.brand { font-size: 1.35rem; font-weight: 800; text-decoration: none; color: var(--ee-primary); }
+.nav-links { display: flex; gap: 1.25rem; }
+.nav-links a { text-decoration: none; color: var(--ee-muted); font-weight: 600; }
+.nav-links a:hover { color: var(--ee-primary); }
+.hero { background: linear-gradient(135deg, #eff6ff, #ffffff); border-bottom: 1px solid #e2e8f0; }
+.eyebrow { display: inline-block; font-size: .75rem; letter-spacing: .12em; font-weight: 800; color: var(--ee-primary); margin-bottom: .75rem; }
+.hero-card { background: white; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 3rem; box-shadow: 0 15px 35px rgba(15, 23, 42, .07); text-align: center; }
+.event-card { border: 1px solid #e2e8f0; border-radius: 1rem; overflow: hidden; }
+.search-box { min-width: 280px; }
+.form-control, .form-select { border-color: #cbd5e1; }
+.validation-message { color: #dc2626; font-size: .875rem; display: block; margin-top: .25rem; }
+footer { background: white; }

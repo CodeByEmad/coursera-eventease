@@ -1,0 +1,23 @@
+@page "/"
+@inject EventService EventService
+
+<PageTitle>EventEase</PageTitle>
+
+<section class="hero">
+    <div class="container py-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="eyebrow">EVENT MANAGEMENT</span>
+                <h1 class="display-4 fw-bold">Discover events. Register. Attend.</h1>
+                <p class="lead text-muted">EventEase is a simple Blazor application for browsing events, registering attendees, and tracking attendance.</p>
+                <a href="/events" class="btn btn-primary btn-lg">Explore events</a>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-card">
+                    <div class="display-6 fw-bold">@EventService.GetEvents().Count</div>
+                    <div class="text-muted">Upcoming events</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

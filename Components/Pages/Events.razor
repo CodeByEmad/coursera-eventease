@@ -1,0 +1,43 @@
+@page "/events"
+@inject EventService EventService
+
+<PageTitle>Events | EventEase</PageTitle>
+
+<div class="container py-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+            <h1>Upcoming Events</h1>
+            <p class="text-muted mb-0">Find an event and reserve your place.</p>
+        </div>
+        <label class="search-box">
+            <span class="visually-hidden">Search events</span>
+            <input class="form-control" @bind="searchText" @bind:event="oninput" placeholder="Search events..." />
+        </label>
+    </div>
+
+    @if (FilteredEvents.Count == 0)
+    {
+        <div class="alert alert-info">No events match your search.</div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var item in FilteredEvents)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <EventCard Event="item" />
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private string searchText = string.Empty;
+
+    private List<Event> FilteredEvents => EventService.GetEvents()
+        .Where(e => string.IsNullOrWhiteSpace(searchText)
+            || e.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            || e.Location.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+}

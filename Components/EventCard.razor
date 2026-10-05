@@ -1,28 +1,61 @@
-@using EventEase.Models
+<div class="event-card">
+    <h3>@Event.Name</h3>
 
-<div class="card event-card h-100 shadow-sm">
-    <div class="card-body d-flex flex-column">
-        <div class="d-flex justify-content-between gap-2 mb-2">
-            <h3 class="h5 mb-0">@Event.Name</h3>
-            <span class="badge @(Event.IsFull ? "text-bg-danger" : "text-bg-success")">
-                @(Event.IsFull ? "Full" : $"{Event.AvailableSeats} seats")
-            </span>
-        </div>
-        <p class="text-muted mb-1">@Event.Date.ToString("dd MMM yyyy, h:mm tt")</p>
-        <p class="text-muted mb-3">@Event.Location</p>
-        <p class="flex-grow-1">@Event.Description</p>
+    <p>
+        <strong>Date:</strong>
+        @Event.Date.ToString("dd MMM yyyy")
+    </p>
 
-        <div class="d-flex gap-2 mt-2">
-            <a class="btn btn-outline-primary" href="/events/@Event.Id">Details</a>
-            @if (!Event.IsFull)
-            {
-                <a class="btn btn-primary" href="/register/@Event.Id">Register</a>
-            }
-        </div>
+    <p>
+        <strong>Location:</strong>
+        @Event.Location
+    </p>
+
+    <p>@Event.Description</p>
+
+    <p>
+        <strong>Available Seats:</strong>
+        @Event.AvailableSeats
+    </p>
+
+    <div class="form-group">
+        <label for="registration-status-@Event.Id">
+            Registration Status
+        </label>
+
+        <select id="registration-status-@Event.Id"
+                class="form-control"
+                @bind="RegistrationStatus"
+                @bind:after="NotifyRegistrationStatusChanged">
+            <option value="false">Not Registered</option>
+            <option value="true">Registered</option>
+        </select>
     </div>
+
+    @if (RegistrationStatus)
+    {
+        <p class="alert alert-success">
+            You are registered for this event.
+        </p>
+    }
+
+    <a class="button" href="/events/@Event.Id">
+        View Details
+    </a>
 </div>
 
 @code {
     [Parameter, EditorRequired]
     public Event Event { get; set; } = new();
+
+    [Parameter]
+    public bool RegistrationStatus { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> RegistrationStatusChanged { get; set; }
+
+    private async Task NotifyRegistrationStatusChanged()
+    {
+        await RegistrationStatusChanged.InvokeAsync(RegistrationStatus);
+    }
 }
